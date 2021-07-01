@@ -7,18 +7,18 @@ const breedToFetchLower = breedToFetchEntry.toLowerCase();
 
 const queryURL = 'https://api.thecatapi.com/v1/breeds/search?q=';
 const urlToFetch = queryURL + breedToFetchLower;
-const testBadQuery = 'https://api.thecatpi.com/v1/breeds/search?q='
+const testBadQuery = 'https://api.thecatpi.com/v1/breeds/search?q=';
 // console.log(urlToFetch);
 
 console.log(`Meow! I'm working on it. Results are coming up RIGHT MEOW.`);
-request(queryURL, (error, response, body) => {
+request(urlToFetch, (error, response, body) => {
   if (error) {
-    console.log("An error has occured. HISSSSS!")
+    console.log("An error has occured. HISSSSS!");
     console.log(response);
     console.log(error);
     return error;
   } else {
-    // console.log('parsedBodyObject:', parsedBodyObject); // Print the JSON returned from the API request.    
+    // console.log('parsedBodyObject:', parsedBodyObject); // Print the JSON returned from the API request.
     const parsedBodyObject = JSON.parse(body);
     if (parsedBodyObject.length === 0) {
       console.log("Sorry, I couldn't find an entry for your search. Meow Meow.");
