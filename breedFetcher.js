@@ -1,35 +1,37 @@
 const request = require('request');
-const breedToFetchEntry = process.argv.slice(2, 3)[0];
-const breedToFetchLower = breedToFetchEntry.toLowerCase();
+
 
 // API:  e.g ?q=sib to search for Siberian - https://api.thecatapi.com/v1/breeds/search?q=sib
 // https://api.thecatapi.com/v1/breeds/search?q=sib
 
 const queryURL = 'https://api.thecatapi.com/v1/breeds/search?q=';
-const urlToFetch = queryURL + breedToFetchLower;
 const testBadQuery = 'https://api.thecatpi.com/v1/breeds/search?q=';
-// console.log(urlToFetch);
 
-console.log(`Meow! I'm working on it. Results are coming up RIGHT MEOW.`);
-request(urlToFetch, (error, response, body) => {
-  if (error) {
-    console.log("An error has occured. HISSSSS!");
-    console.log(response);
-    console.log(error);
-    return error;
-  } else {
-    // console.log('parsedBodyObject:', parsedBodyObject); // Print the JSON returned from the API request.
-    const parsedBodyObject = JSON.parse(body);
-    if (parsedBodyObject.length === 0) {
-      console.log("Sorry, I couldn't find an entry for your search. Meow Meow.");
+const fetchBreedDescription = function(breedName, callback) {
+  const urlToFetch = queryURL + breedName;
+  request(urlToFetch, (error, response, body) => {
+    if (error) {
+      callback(error, null);
       return;
+    } else {
+      const parsedBodyObject = JSON.parse(body);
+      const searchFailure = parsedBodyObject.length === 0;
+      if (searchFailure) {
+        let descriptionArray = [parsedBodyObject, searchFailure];
+        callback(null, descriptionArray);
+      } else {
+        const breedName = parsedBodyObject[0].name;
+        const description = parsedBodyObject[0].description;
+        descriptionArray = [parsedBodyObject, searchFailure, breedName, description];
+        callback(null, descriptionArray);
+      }
     }
-    const breedName = parsedBodyObject[0].name;
-    const description = parsedBodyObject[0].description;
-    console.log(`Here's the description of ${breedName}: ${description}`);
-  }
-});
+  });
+};
 
+module.exports = {
+  fetchBreedDescription
+}
 
 /*
 parsedBodyObject: [
